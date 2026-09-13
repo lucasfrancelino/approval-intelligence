@@ -11,6 +11,9 @@ class DigitalTwinResponse(BaseModel):
     performance_direction: str
     performance_status: str
 
+    performance_level: str
+    performance_consistency: str
+
     evidence_count: int
 
     overall_status: str

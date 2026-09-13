@@ -9,6 +9,8 @@ from app.api.candidate_exams import router as candidate_exams_router
 from app.api.evidences import router as evidences_router
 from app.api.digital_twin import router as digital_twin_router
 
+from app.api.decisions import router as decisions_router
+
 
 app = FastAPI(
     title=settings.app_name,
@@ -22,6 +24,10 @@ app.include_router(candidate_exams_router)
 app.include_router(evidences_router)
 app.include_router(
     digital_twin_router,
+    prefix="/api",
+)
+app.include_router(
+    decisions_router,
     prefix="/api",
 )
 
