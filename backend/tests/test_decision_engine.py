@@ -104,3 +104,152 @@ def test_stable_performance_requires_monitoring():
     assert decision.decision_type == "estabilizacao"
     assert decision.priority == "media"
     assert decision.action == "manter_e_observar"
+
+def test_decision_considera_queda_em_uma_dimensao():
+    engine = DecisionEngine()
+
+    digital_twin = SimpleNamespace(
+        performance_level="excelente",
+        performance_direction="evolucao",
+        dimensions=[
+            SimpleNamespace(
+                dimension="Português",
+                current_value=88.0,
+                previous_value=93.0,
+                variation=-5.0,
+                direction="queda",
+                status="negativo",
+                level="excelente",
+            )
+        ],
+    )
+
+    result = engine.decide(
+        digital_twin=digital_twin,
+    )
+
+    assert result.decision_type == "monitoramento_dimensao"
+    assert result.priority == "media"
+    assert result.action == "investigar_queda_em_dimensao"
+
+def test_decision_dimensao_excelente_em_queda():
+    engine = DecisionEngine()
+    digital_twin = SimpleNamespace(
+        performance_level="excelente",
+        performance_direction="evolucao",
+        dimensions=[
+            SimpleNamespace(
+                dimension="Português",
+                current_value=88.0,
+                previous_value=93.0,
+                variation=-5.0,
+                direction="queda",
+                status="negativo",
+                level="excelente",
+            )
+        ],
+    )
+    result = engine.decide(
+        digital_twin=digital_twin,
+    )
+    assert result.priority == "media"
+    assert result.action == "investigar_queda_em_dimensao"
+
+def test_decision_dimensao_critica_em_queda():
+    engine = DecisionEngine()
+    digital_twin = SimpleNamespace(
+        performance_level="excelente",
+        performance_direction="evolucao",
+        dimensions=[
+            SimpleNamespace(
+                dimension="Matemática",
+                current_value=48.0,
+                previous_value=72.0,
+                variation=-24.0,
+                direction="queda",
+                status="negativo",
+                level="critico",
+            )
+        ],
+    )
+    result = engine.decide(
+        digital_twin=digital_twin,
+    )
+    assert result.priority == "alta"
+    assert result.action == "investigar_queda_em_dimensao"
+
+def test_decision_seleciona_dimensao_de_maior_prioridade():
+
+    engine = DecisionEngine()
+
+    digital_twin = SimpleNamespace(
+        performance_level="excelente",
+        performance_direction="evolucao",
+        dimensions=[
+            SimpleNamespace(
+                dimension="Português",
+                current_value=88.0,
+                previous_value=93.0,
+                variation=-5.0,
+                direction="queda",
+                status="negativo",
+                level="excelente",
+            ),
+            SimpleNamespace(
+                dimension="Matemática",
+                current_value=48.0,
+                previous_value=72.0,
+                variation=-24.0,
+                direction="queda",
+                status="negativo",
+                level="critico",
+            ),
+        ],
+    )
+
+    result = engine.decide(
+        digital_twin=digital_twin,
+    )
+
+    assert result.priority == "alta"
+    assert result.action == "investigar_queda_em_dimensao"
+    assert "Matemática" in result.reason
+
+
+def test_decision_em_empate_seleciona_maior_queda():
+
+    engine = DecisionEngine()
+
+    digital_twin = SimpleNamespace(
+        performance_level="excelente",
+        performance_direction="evolucao",
+        dimensions=[
+            SimpleNamespace(
+                dimension="Português",
+                current_value=88.0,
+                previous_value=93.0,
+                variation=-5.0,
+                direction="queda",
+                status="negativo",
+                level="bom",
+            ),
+            SimpleNamespace(
+                dimension="Direito",
+                current_value=72.0,
+                previous_value=80.0,
+                variation=-8.0,
+                direction="queda",
+                status="negativo",
+                level="bom",
+            ),
+        ],
+    )
+
+    result = engine.decide(
+        digital_twin=digital_twin,
+    )
+
+    assert result.priority == "media"
+    assert result.action == "investigar_queda_em_dimensao"
+    assert "Direito" in result.reason
+

@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+from app.schemas.dimension import DimensionAnalysisResponse
+
 
 class DigitalTwinResponse(BaseModel):
     candidate_exam_id: int
@@ -18,3 +20,5 @@ class DigitalTwinResponse(BaseModel):
 
     overall_status: str
     summary: str
+
+    dimensions: list[DimensionAnalysisResponse]

@@ -5,6 +5,8 @@ from pydantic import BaseModel, Field
 
 class EvidenceCreate(BaseModel):
     evidence_type: str
+    dimension: str | None = None
+    metric: str | None = None
     source_type: str
     value: str
     confidence: float | None = Field(
@@ -18,14 +20,14 @@ class EvidenceResponse(BaseModel):
     id: int
     candidate_exam_id: int
     evidence_type: str
+    dimension: str | None
+    metric: str | None
     source_type: str
     value: str
     confidence: float | None
     observed_at: datetime
 
-    model_config = {
-        "from_attributes": True,
-    }
+    model_config = {"from_attributes": True}
 
 
 class EvidenceInterpretationResponse(BaseModel):

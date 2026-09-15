@@ -26,6 +26,17 @@ class Evidence(Base):
         nullable=False,
     )
 
+    dimension: Mapped[str | None] = mapped_column(
+        String(150),
+        nullable=True,
+        index=True,
+    )
+
+    metric: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
     source_type: Mapped[str] = mapped_column(
         String(50),
         nullable=False,
@@ -48,5 +59,5 @@ class Evidence(Base):
     )
 
     candidate_exam: Mapped["CandidateExam"] = relationship(
-        back_populates="evidences",
+        back_populates="evidences"
     )

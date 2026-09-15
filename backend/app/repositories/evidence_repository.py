@@ -7,13 +7,18 @@ def create_evidence(
     db: Session,
     candidate_exam_id: int,
     evidence_type: str,
+    dimension: str | None,
+    metric: str | None,
     source_type: str,
     value: str,
     confidence: float | None = None,
 ) -> Evidence:
+
     evidence = Evidence(
         candidate_exam_id=candidate_exam_id,
         evidence_type=evidence_type,
+        dimension=dimension,
+        metric=metric,
         source_type=source_type,
         value=value,
         confidence=confidence,
@@ -30,17 +35,20 @@ def get_evidence_by_id(
     db: Session,
     evidence_id: int,
 ) -> Evidence | None:
+
     return (
         db.query(Evidence)
         .filter(Evidence.id == evidence_id)
         .first()
     )
 
+
 def get_evidence_by_id_and_candidate_exam(
     db: Session,
     evidence_id: int,
     candidate_exam_id: int,
 ) -> Evidence | None:
+
     return (
         db.query(Evidence)
         .filter(
@@ -55,6 +63,7 @@ def get_evidences_by_candidate_exam(
     db: Session,
     candidate_exam_id: int,
     evidence_type: str | None = None,
+    dimension: str | None = None,
 ) -> list[Evidence]:
 
     query = (
@@ -67,6 +76,11 @@ def get_evidences_by_candidate_exam(
     if evidence_type is not None:
         query = query.filter(
             Evidence.evidence_type == evidence_type
+        )
+
+    if dimension is not None:
+        query = query.filter(
+            Evidence.dimension == dimension
         )
 
     return (

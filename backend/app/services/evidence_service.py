@@ -25,6 +25,8 @@ def create_evidence_service(
         db=db,
         candidate_exam_id=candidate_exam_id,
         evidence_type=data.evidence_type,
+        dimension=data.dimension,
+        metric=data.metric,
         source_type=data.source_type,
         value=data.value,
         confidence=data.confidence,

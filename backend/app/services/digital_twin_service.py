@@ -6,13 +6,15 @@ from app.engines.performance_engine import PerformanceEngine
 from app.repositories.evidence_repository import (
     get_evidences_by_candidate_exam,
 )
+from app.services.dimension_service import (
+    analyze_dimensions_service,
+)
 
 
 def get_digital_twin_service(
     db: Session,
     candidate_exam_id: int,
 ):
-
     evidences = get_evidences_by_candidate_exam(
         db=db,
         candidate_exam_id=candidate_exam_id,
@@ -41,9 +43,18 @@ def get_digital_twin_service(
     except ValueError:
         return None
 
+    dimensions = analyze_dimensions_service(
+        db=db,
+        candidate_exam_id=candidate_exam_id,
+    )
+
     digital_twin_engine = DigitalTwinEngine()
 
-    return digital_twin_engine.build(
+    digital_twin = digital_twin_engine.build(
         candidate_exam_id=candidate_exam_id,
         performance=performance,
     )
+
+    digital_twin.dimensions = dimensions
+
+    return digital_twin
