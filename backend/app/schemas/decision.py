@@ -6,4 +6,5 @@ class DecisionResponse(BaseModel):
     decision_type: str
     priority: str
     action: str
+    target_dimension: str | None
     reason: str

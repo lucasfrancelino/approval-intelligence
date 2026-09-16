@@ -39,5 +39,6 @@ def get_next_best_action(
         decision_type=decision.decision_type,
         priority=decision.priority,
         action=decision.action,
+        target_dimension=decision.target_dimension,
         reason=decision.reason,
     )

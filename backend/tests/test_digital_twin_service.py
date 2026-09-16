@@ -1,0 +1,83 @@
+from datetime import datetime
+from unittest.mock import Mock, patch
+
+from app.services.digital_twin_service import get_digital_twin_service
+
+
+def test_desempenho_geral_nao_deve_ser_contaminado_por_dimensoes():
+    evidences = [
+        Mock(
+            evidence_type="simulado",
+            dimension="Desempenho Geral",
+            metric="percentual_acerto",
+            value="Acertou 72% das questões",
+            observed_at=datetime(2026, 1, 1),
+        ),
+        Mock(
+            evidence_type="simulado",
+            dimension="Português",
+            metric="percentual_acerto",
+            value="Acertou 93% das questões de Português",
+            observed_at=datetime(2026, 1, 2),
+        ),
+        Mock(
+            evidence_type="simulado",
+            dimension="Desempenho Geral",
+            metric="percentual_acerto",
+            value="Acertou 64% das questões",
+            observed_at=datetime(2026, 1, 3),
+        ),
+        Mock(
+            evidence_type="simulado",
+            dimension="Desempenho Geral",
+            metric="percentual_acerto",
+            value="Acertou 69% das questões",
+            observed_at=datetime(2026, 1, 4),
+        ),
+        Mock(
+            evidence_type="simulado",
+            dimension="Desempenho Geral",
+            metric="percentual_acerto",
+            value="Acertou 76% das questões",
+            observed_at=datetime(2026, 1, 5),
+        ),
+        Mock(
+            evidence_type="simulado",
+            dimension="Português",
+            metric="percentual_acerto",
+            value="Acertou 88% das questões de Português",
+            observed_at=datetime(2026, 1, 6),
+        ),
+    ]
+
+    dimension_evidences = [
+        evidence
+        for evidence in evidences
+        if evidence.dimension is not None
+    ]
+
+    db = Mock()
+
+    with patch(
+        "app.services.digital_twin_service.get_evidences_by_candidate_exam",
+        return_value=evidences,
+    ), patch(
+        "app.services.dimension_service.get_evidences_by_candidate_exam",
+        return_value=dimension_evidences,
+    ):
+        result = get_digital_twin_service(
+            db=db,
+            candidate_exam_id=1,
+        )
+
+    assert result.performance_current == 76.0
+    assert result.performance_previous == 69.0
+    assert result.performance_variation == 7.0
+
+    dimensions = {
+        dimension.dimension: dimension
+        for dimension in result.dimensions
+    }
+
+    assert dimensions["Desempenho Geral"].current_value == 76.0
+    assert dimensions["Português"].current_value == 88.0

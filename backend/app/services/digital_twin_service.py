@@ -23,21 +23,30 @@ def get_digital_twin_service(
 
     evidence_engine = EvidenceEngine()
 
-    values = []
+    performance_values = []
 
     for evidence in evidences:
+
+        # Evidências de dimensão específica não entram
+        # no cálculo do desempenho geral.
+        if (
+            evidence.dimension is not None
+            and evidence.dimension != "Desempenho Geral"
+        ):
+            continue
+
         interpretation = evidence_engine.interpret(
             evidence_type=evidence.evidence_type,
             value=evidence.value,
         )
 
-        values.append(interpretation.value)
+        performance_values.append(interpretation.value)
 
     performance_engine = PerformanceEngine()
 
     try:
         performance = performance_engine.analyze(
-            values=values,
+            values=performance_values,
         )
 
     except ValueError:
