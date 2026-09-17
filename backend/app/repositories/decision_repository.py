@@ -23,3 +23,17 @@ def create_decision(
     db.refresh(decision_model)
 
     return decision_model
+
+
+def get_decisions_by_candidate_exam(
+    db: Session,
+    candidate_exam_id: int,
+) -> list[DecisionModel]:
+    return (
+        db.query(DecisionModel)
+        .filter(
+            DecisionModel.candidate_exam_id == candidate_exam_id,
+        )
+        .order_by(DecisionModel.created_at.desc())
+        .all()
+    )

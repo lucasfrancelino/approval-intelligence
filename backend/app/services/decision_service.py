@@ -1,7 +1,10 @@
 from sqlalchemy.orm import Session
 
 from app.engines.decision_engine import DecisionEngine
-from app.repositories.decision_repository import create_decision
+from app.repositories.decision_repository import (
+    create_decision,
+    get_decisions_by_candidate_exam,
+)
 from app.services.digital_twin_service import get_digital_twin_service
 
 
@@ -30,3 +33,13 @@ def get_next_best_action_service(
     )
 
     return decision
+
+
+def get_decision_history_service(
+    db: Session,
+    candidate_exam_id: int,
+):
+    return get_decisions_by_candidate_exam(
+        db=db,
+        candidate_exam_id=candidate_exam_id,
+    )
