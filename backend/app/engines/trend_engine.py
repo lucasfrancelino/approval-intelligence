@@ -1,5 +1,11 @@
 from dataclasses import dataclass
 
+from app.core.classification import (
+    classify_direction,
+    classify_status,
+)
+from app.core.constants import SUPPORTED_METRIC
+
 
 @dataclass
 class TrendAnalysis:
@@ -17,7 +23,7 @@ class TrendEngine:
     def analyze(
         self,
         values: list[float],
-        metric: str = "percentual_acerto",
+        metric: str = SUPPORTED_METRIC,
     ) -> TrendAnalysis:
 
         if len(values) < 2:
@@ -30,9 +36,9 @@ class TrendEngine:
 
         variation = current_value - previous_value
 
-        direction = self._classify_direction(variation)
+        direction = classify_direction(variation)
 
-        status = self._classify_status(direction)
+        status = classify_status(direction)
 
         interpretation = self._build_interpretation(
             current_value=current_value,
@@ -50,28 +56,6 @@ class TrendEngine:
             status=status,
             interpretation=interpretation,
         )
-
-    @staticmethod
-    def _classify_direction(variation: float) -> str:
-
-        if variation > 0:
-            return "evolucao"
-
-        if variation < 0:
-            return "queda"
-
-        return "estavel"
-
-    @staticmethod
-    def _classify_status(direction: str) -> str:
-
-        if direction == "evolucao":
-            return "positivo"
-
-        if direction == "queda":
-            return "negativo"
-
-        return "neutro"
 
     @staticmethod
     def _build_interpretation(

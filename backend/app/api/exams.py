@@ -5,12 +5,10 @@ from app.api.dependencies import get_db
 from app.schemas.exam import ExamCreate, ExamResponse
 from app.services.exam_service import create_exam_service
 
-
 router = APIRouter(
-    prefix="/api/exams",
+    prefix="/exams",
     tags=["Exams"],
 )
-
 
 @router.post(
     "",

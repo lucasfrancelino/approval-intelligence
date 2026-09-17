@@ -10,12 +10,10 @@ from app.services.candidate_exam_service import (
     create_candidate_exam_service,
 )
 
-
 router = APIRouter(
-    prefix="/api/candidate-exams",
+    prefix="/candidate-exams",
     tags=["Candidate Exams"],
 )
-
 
 @router.post(
     "",

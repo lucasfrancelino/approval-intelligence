@@ -11,17 +11,28 @@ from app.api.digital_twin import router as digital_twin_router
 from app.api.decisions import router as decisions_router
 from app.api.dimensions import router as dimensions_router
 
-
 app = FastAPI(
     title=settings.app_name,
     version="0.1.0",
     description="API principal do Approval Intelligence.",
 )
 
-app.include_router(candidates_router)
-app.include_router(exams_router)
-app.include_router(candidate_exams_router)
-app.include_router(evidences_router)
+app.include_router(
+    candidates_router,
+    prefix="/api",
+)
+app.include_router(
+    exams_router,
+    prefix="/api",
+)
+app.include_router(
+    candidate_exams_router,
+    prefix="/api",
+)
+app.include_router(
+    evidences_router,
+    prefix="/api",
+)
 app.include_router(
     digital_twin_router,
     prefix="/api",
@@ -42,7 +53,6 @@ def health_check():
         "application": settings.app_name,
         "version": "0.1.0",
     }
-
 
 @app.get("/api/health/database")
 def database_health_check():

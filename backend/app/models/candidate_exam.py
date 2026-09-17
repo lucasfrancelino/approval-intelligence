@@ -4,7 +4,7 @@ from sqlalchemy import DateTime, ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 
 class CandidateExam(Base):
     __tablename__ = "candidate_exams"
@@ -42,6 +42,6 @@ class CandidateExam(Base):
     )
 
     evidences: Mapped[list["Evidence"]] = relationship(
-    back_populates="candidate_exam",
-    cascade="all, delete-orphan",
-)
+        back_populates="candidate_exam",
+        cascade="all, delete-orphan",
+    )

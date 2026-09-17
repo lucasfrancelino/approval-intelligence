@@ -1,4 +1,11 @@
+import re
 from dataclasses import dataclass
+
+from app.core.classification import classify_level
+from app.core.constants import (
+    EVIDENCE_TYPE_SIMULADO,
+    SUPPORTED_METRIC,
+)
 
 
 @dataclass
@@ -14,7 +21,7 @@ class EvidenceInterpretation:
 class EvidenceEngine:
 
     def interpret(self, evidence_type: str, value: str) -> EvidenceInterpretation:
-        if evidence_type == "simulado":
+        if evidence_type == EVIDENCE_TYPE_SIMULADO:
             return self._interpret_simulado(value)
 
         raise ValueError(
@@ -24,7 +31,7 @@ class EvidenceEngine:
     def _interpret_simulado(self, value: str) -> EvidenceInterpretation:
         percentage = self._extract_percentage(value)
 
-        status = self._classify_percentage(percentage)
+        status = classify_level(percentage)
 
         interpretation = self._build_interpretation(
             percentage,
@@ -33,7 +40,7 @@ class EvidenceEngine:
 
         return EvidenceInterpretation(
             dimension="desempenho",
-            metric="percentual_acerto",
+            metric=SUPPORTED_METRIC,
             value=percentage,
             unit="percent",
             status=status,
@@ -42,8 +49,6 @@ class EvidenceEngine:
 
     @staticmethod
     def _extract_percentage(value: str) -> float:
-        import re
-
         match = re.search(r"(\d+(?:[.,]\d+)?)\s*%", value)
 
         if not match:
@@ -52,19 +57,6 @@ class EvidenceEngine:
             )
 
         return float(match.group(1).replace(",", "."))
-
-    @staticmethod
-    def _classify_percentage(percentage: float) -> str:
-        if percentage < 50:
-            return "critico"
-
-        if percentage < 70:
-            return "atencao"
-
-        if percentage < 85:
-            return "bom"
-
-        return "excelente"
 
     @staticmethod
     def _build_interpretation(

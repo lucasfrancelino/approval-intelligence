@@ -1,5 +1,11 @@
 from dataclasses import dataclass
 
+from app.core.classification import (
+    classify_direction,
+    classify_level,
+    classify_status,
+)
+
 
 @dataclass
 class PerformanceAnalysis:
@@ -34,11 +40,11 @@ class PerformanceEngine:
 
         variation = current_value - previous_value
 
-        direction = self._classify_direction(
+        direction = classify_direction(
             variation
         )
 
-        status = self._classify_status(
+        status = classify_status(
             direction
         )
 
@@ -46,7 +52,7 @@ class PerformanceEngine:
             values
         )
 
-        level = self._classify_level(
+        level = classify_level(
             current_value
         )
 
@@ -60,32 +66,6 @@ class PerformanceEngine:
             consistency=consistency,
             level=level,
         )
-
-    @staticmethod
-    def _classify_direction(
-        variation: float,
-    ) -> str:
-
-        if variation > 0:
-            return "evolucao"
-
-        if variation < 0:
-            return "queda"
-
-        return "estavel"
-
-    @staticmethod
-    def _classify_status(
-        direction: str,
-    ) -> str:
-
-        if direction == "evolucao":
-            return "positivo"
-
-        if direction == "queda":
-            return "negativo"
-
-        return "neutro"
 
     @staticmethod
     def _classify_consistency(
@@ -120,19 +100,3 @@ class PerformanceEngine:
             return "consistente_estavel"
 
         return "oscilante"
-
-    @staticmethod
-    def _classify_level(
-        value: float,
-    ) -> str:
-
-        if value < 50:
-            return "critico"
-
-        if value < 70:
-            return "atencao"
-
-        if value < 85:
-            return "bom"
-
-        return "excelente"

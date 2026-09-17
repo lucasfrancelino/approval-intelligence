@@ -1,15 +1,16 @@
 from sqlalchemy.orm import Session
 
+from app.core.constants import (
+    EVIDENCE_TYPE_SIMULADO,
+    GENERAL_DIMENSION,
+    SUPPORTED_METRIC,
+)
 from app.engines.dimension_engine import DimensionEngine
 from app.engines.evidence_engine import EvidenceEngine
 from app.repositories.evidence_repository import (
     get_evidences_by_candidate_exam,
 )
 from app.schemas.dimension import DimensionAnalysisResponse
-
-
-GENERAL_DIMENSION = "Desempenho Geral"
-SUPPORTED_METRIC = "percentual_acerto"
 
 
 def analyze_dimensions_service(
@@ -20,7 +21,7 @@ def analyze_dimensions_service(
     evidences = get_evidences_by_candidate_exam(
         db=db,
         candidate_exam_id=candidate_exam_id,
-        evidence_type="simulado",
+        evidence_type=EVIDENCE_TYPE_SIMULADO,
     )
 
     evidence_engine = EvidenceEngine()

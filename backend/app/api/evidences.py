@@ -15,12 +15,10 @@ from app.services.evidence_service import (
     analyze_performance_trend_service,
 )
 
-
 router = APIRouter(
-    prefix="/api/candidate-exams",
+    prefix="/candidate-exams",
     tags=["Evidences"],
 )
-
 
 @router.post(
     "/{candidate_exam_id}/evidences",
@@ -37,7 +35,6 @@ def create_evidence(
         candidate_exam_id=candidate_exam_id,
         data=data,
     )
-
 
 @router.get(
     "/{candidate_exam_id}/evidences/{evidence_id}/interpretation",

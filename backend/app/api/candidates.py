@@ -5,12 +5,10 @@ from app.api.dependencies import get_db
 from app.schemas.candidate import CandidateCreate, CandidateResponse
 from app.services.candidate_service import create_candidate_service
 
-
 router = APIRouter(
-    prefix="/api/candidates",
+    prefix="/candidates",
     tags=["Candidates"],
 )
-
 
 @router.post(
     "",

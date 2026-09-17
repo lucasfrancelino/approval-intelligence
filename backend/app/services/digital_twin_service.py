@@ -1,5 +1,10 @@
 from sqlalchemy.orm import Session
 
+from app.core.constants import (
+    EVIDENCE_TYPE_SIMULADO,
+    GENERAL_DIMENSION,
+    SUPPORTED_METRIC,
+)
 from app.engines.digital_twin_engine import DigitalTwinEngine
 from app.engines.evidence_engine import EvidenceEngine
 from app.engines.performance_engine import PerformanceEngine
@@ -11,10 +16,6 @@ from app.services.dimension_service import (
 )
 
 
-GENERAL_DIMENSION = "Desempenho Geral"
-SUPPORTED_METRIC = "percentual_acerto"
-
-
 def get_digital_twin_service(
     db: Session,
     candidate_exam_id: int,
@@ -22,7 +23,7 @@ def get_digital_twin_service(
     evidences = get_evidences_by_candidate_exam(
         db=db,
         candidate_exam_id=candidate_exam_id,
-        evidence_type="simulado",
+        evidence_type=EVIDENCE_TYPE_SIMULADO,
     )
 
     evidence_engine = EvidenceEngine()

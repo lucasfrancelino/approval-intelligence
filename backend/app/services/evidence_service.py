@@ -1,18 +1,19 @@
 from sqlalchemy.orm import Session
 
+from app.core.constants import (
+    EVIDENCE_TYPE_SIMULADO,
+    SUPPORTED_METRIC,
+)
 from app.engines.evidence_engine import EvidenceEngine
+from app.engines.trend_engine import TrendEngine
 from app.repositories.evidence_repository import (
     create_evidence,
     get_evidence_by_id_and_candidate_exam,
+    get_evidences_by_candidate_exam,
 )
 from app.schemas.evidence import (
     EvidenceCreate,
     EvidenceInterpretationResponse,
-)
-
-from app.engines.trend_engine import TrendEngine
-from app.repositories.evidence_repository import (
-    get_evidences_by_candidate_exam,
 )
 
 
@@ -65,6 +66,7 @@ def interpret_evidence_service(
         interpretation=interpretation.interpretation,
     )
 
+
 def analyze_performance_trend_service(
     db: Session,
     candidate_exam_id: int,
@@ -72,7 +74,7 @@ def analyze_performance_trend_service(
     evidences = get_evidences_by_candidate_exam(
         db=db,
         candidate_exam_id=candidate_exam_id,
-        evidence_type="simulado",
+        evidence_type=EVIDENCE_TYPE_SIMULADO,
     )
 
     engine = EvidenceEngine()
@@ -93,5 +95,5 @@ def analyze_performance_trend_service(
 
     return trend_engine.analyze(
         values=values,
-        metric="percentual_acerto",
+        metric=SUPPORTED_METRIC,
     )
