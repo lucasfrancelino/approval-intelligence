@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.engines.decision_engine import DecisionEngine
+from app.repositories.decision_repository import create_decision
 from app.services.digital_twin_service import get_digital_twin_service
 
 
@@ -18,6 +19,14 @@ def get_next_best_action_service(
 
     decision_engine = DecisionEngine()
 
-    return decision_engine.decide(
+    decision = decision_engine.decide(
         digital_twin=digital_twin,
     )
+
+    create_decision(
+        db=db,
+        candidate_exam_id=candidate_exam_id,
+        decision=decision,
+    )
+
+    return decision
