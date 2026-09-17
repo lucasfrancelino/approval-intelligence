@@ -9,6 +9,7 @@ def test_get_next_best_action_service():
     digital_twin = SimpleNamespace(
         performance_level="bom",
         performance_direction="evolucao",
+        dimensions=[],
     )
 
     with patch(
@@ -24,3 +25,4 @@ def test_get_next_best_action_service():
     assert decision.decision_type == "progressao"
     assert decision.priority == "baixa"
     assert decision.action == "aumentar_desafio"
+    assert decision.target_dimension is None

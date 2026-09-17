@@ -85,6 +85,9 @@ def get_evidences_by_candidate_exam(
 
     return (
         query
-        .order_by(Evidence.observed_at.asc())
+        .order_by(
+            Evidence.observed_at.asc(),
+            Evidence.id.asc(),
+        )
         .all()
     )

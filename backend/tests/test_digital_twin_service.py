@@ -1,10 +1,13 @@
 from datetime import datetime
 from unittest.mock import Mock, patch
 
-from app.services.digital_twin_service import get_digital_twin_service
+from app.services.digital_twin_service import (
+    get_digital_twin_service,
+)
 
 
 def test_desempenho_geral_nao_deve_ser_contaminado_por_dimensoes():
+
     evidences = [
         Mock(
             evidence_type="simulado",
@@ -50,21 +53,28 @@ def test_desempenho_geral_nao_deve_ser_contaminado_por_dimensoes():
         ),
     ]
 
-    dimension_evidences = [
-        evidence
-        for evidence in evidences
-        if evidence.dimension is not None
-    ]
-
     db = Mock()
 
     with patch(
-        "app.services.digital_twin_service.get_evidences_by_candidate_exam",
+        "app.services.digital_twin_service."
+        "get_evidences_by_candidate_exam",
         return_value=evidences,
     ), patch(
-        "app.services.dimension_service.get_evidences_by_candidate_exam",
-        return_value=dimension_evidences,
+        "app.services.digital_twin_service."
+        "analyze_dimensions_service",
+        return_value=[
+            Mock(
+                dimension="Português",
+                current_value=88.0,
+                previous_value=93.0,
+                variation=-5.0,
+                direction="queda",
+                status="negativo",
+                level="excelente",
+            )
+        ],
     ):
+
         result = get_digital_twin_service(
             db=db,
             candidate_exam_id=1,
@@ -79,5 +89,53 @@ def test_desempenho_geral_nao_deve_ser_contaminado_por_dimensoes():
         for dimension in result.dimensions
     }
 
-    assert dimensions["Desempenho Geral"].current_value == 76.0
+    assert "Desempenho Geral" not in dimensions
     assert dimensions["Português"].current_value == 88.0
+
+
+def test_metricas_nao_suportadas_nao_entram_no_desempenho_geral():
+
+    evidences = [
+        Mock(
+            evidence_type="simulado",
+            dimension="Desempenho Geral",
+            metric="percentual_acerto",
+            value="Acertou 70% das questões",
+            observed_at=datetime(2026, 1, 1),
+        ),
+        Mock(
+            evidence_type="simulado",
+            dimension="Desempenho Geral",
+            metric="tempo_medio",
+            value="Tempo médio de 90 segundos",
+            observed_at=datetime(2026, 1, 2),
+        ),
+        Mock(
+            evidence_type="simulado",
+            dimension="Desempenho Geral",
+            metric="percentual_acerto",
+            value="Acertou 75% das questões",
+            observed_at=datetime(2026, 1, 3),
+        ),
+    ]
+
+    db = Mock()
+
+    with patch(
+        "app.services.digital_twin_service."
+        "get_evidences_by_candidate_exam",
+        return_value=evidences,
+    ), patch(
+        "app.services.digital_twin_service."
+        "analyze_dimensions_service",
+        return_value=[],
+    ):
+
+        result = get_digital_twin_service(
+            db=db,
+            candidate_exam_id=1,
+        )
+
+    assert result.performance_current == 75.0
+    assert result.performance_previous == 70.0
+    assert result.performance_variation == 5.0

@@ -3,24 +3,50 @@ from types import SimpleNamespace
 from app.engines.digital_twin_engine import DigitalTwinEngine
 
 
+def build_performance(
+    current_value=72.0,
+    previous_value=69.0,
+    variation=3.0,
+    direction="evolucao",
+    status="positivo",
+    evidence_count=4,
+    consistency="consistente_evolucao",
+    level="bom",
+):
+    return SimpleNamespace(
+        current_value=current_value,
+        previous_value=previous_value,
+        variation=variation,
+        direction=direction,
+        status=status,
+        evidence_count=evidence_count,
+        consistency=consistency,
+        level=level,
+    )
+
+
 def test_digital_twin_com_evolucao():
 
     engine = DigitalTwinEngine()
 
-    performance = SimpleNamespace(
-        current_value=72.0,
-        previous_value=69.0,
-        variation=3.0,
-        direction="evolucao",
-        status="positivo",
-        evidence_count=4,
-        consistency="consistente_evolucao",
-        level="bom",
-    )
+    performance = build_performance()
+
+    dimensions = [
+        SimpleNamespace(
+            dimension="Português",
+            current_value=88.0,
+            previous_value=93.0,
+            variation=-5.0,
+            direction="queda",
+            status="negativo",
+            level="excelente",
+        )
+    ]
 
     result = engine.build(
         candidate_exam_id=1,
         performance=performance,
+        dimensions=dimensions,
     )
 
     assert result.candidate_exam_id == 1
@@ -38,12 +64,28 @@ def test_digital_twin_com_evolucao():
     assert result.evidence_count == 4
     assert result.overall_status == "evolucao"
 
+    assert result.dimensions == dimensions
+
+
+def test_digital_twin_com_dimensoes_vazias_por_padrao():
+
+    engine = DigitalTwinEngine()
+
+    performance = build_performance()
+
+    result = engine.build(
+        candidate_exam_id=1,
+        performance=performance,
+    )
+
+    assert result.dimensions == []
+
 
 def test_digital_twin_com_queda():
 
     engine = DigitalTwinEngine()
 
-    performance = SimpleNamespace(
+    performance = build_performance(
         current_value=68.0,
         previous_value=74.0,
         variation=-6.0,
@@ -68,7 +110,7 @@ def test_digital_twin_com_poucas_evidencias():
 
     engine = DigitalTwinEngine()
 
-    performance = SimpleNamespace(
+    performance = build_performance(
         current_value=72.0,
         previous_value=72.0,
         variation=0.0,

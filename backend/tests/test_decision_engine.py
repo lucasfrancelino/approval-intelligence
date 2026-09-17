@@ -7,6 +7,7 @@ def build_twin(level: str, direction: str):
     return SimpleNamespace(
         performance_level=level,
         performance_direction=direction,
+        dimensions=[],
     )
 
 

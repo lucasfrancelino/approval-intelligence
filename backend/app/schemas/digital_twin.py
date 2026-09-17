@@ -1,9 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from app.schemas.dimension import DimensionAnalysisResponse
 
 
 class DigitalTwinResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     candidate_exam_id: int
 
     performance_current: float

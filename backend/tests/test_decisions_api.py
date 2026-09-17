@@ -14,6 +14,7 @@ def test_next_best_action_endpoint():
     digital_twin = SimpleNamespace(
         performance_level="bom",
         performance_direction="evolucao",
+        dimensions=[],
     )
 
     with patch(
@@ -33,4 +34,5 @@ def test_next_best_action_endpoint():
     assert data["decision_type"] == "progressao"
     assert data["priority"] == "baixa"
     assert data["action"] == "aumentar_desafio"
+    assert data["target_dimension"] is None
     assert "reason" in data

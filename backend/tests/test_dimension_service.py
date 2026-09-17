@@ -106,3 +106,50 @@ def test_analyze_dimensions_service_with_real_text_values():
     assert portugues.direction == "evolucao"
     assert portugues.status == "positivo"
     assert portugues.level == "excelente"
+
+def test_desempenho_geral_nao_e_exposto_como_dimensao():
+
+    evidences = [
+        SimpleNamespace(
+            evidence_type="simulado",
+            dimension="Desempenho Geral",
+            metric="percentual_acerto",
+            value="Acertou 72% das questões",
+        ),
+        SimpleNamespace(
+            evidence_type="simulado",
+            dimension="Desempenho Geral",
+            metric="percentual_acerto",
+            value="Acertou 78% das questões",
+        ),
+        SimpleNamespace(
+            evidence_type="simulado",
+            dimension="Português",
+            metric="percentual_acerto",
+            value="Acertou 72% das questões de Português",
+        ),
+        SimpleNamespace(
+            evidence_type="simulado",
+            dimension="Português",
+            metric="percentual_acerto",
+            value="Acertou 78% das questões de Português",
+        ),
+    ]
+
+    with patch(
+        "app.services.dimension_service."
+        "get_evidences_by_candidate_exam",
+        return_value=evidences,
+    ):
+        result = analyze_dimensions_service(
+            db=None,
+            candidate_exam_id=1,
+        )
+
+    dimensions = {
+        item.dimension
+        for item in result
+    }
+
+    assert "Desempenho Geral" not in dimensions
+    assert "Português" in dimensions

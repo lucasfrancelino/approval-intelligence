@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -20,6 +20,10 @@ class DigitalTwinState:
     overall_status: str
     summary: str
 
+    # As dimensões fazem parte formalmente do estado do Gêmeo Digital.
+    # O default mantém compatibilidade com chamadas diretas do engine.
+    dimensions: list = field(default_factory=list)
+
 
 class DigitalTwinEngine:
 
@@ -27,6 +31,7 @@ class DigitalTwinEngine:
         self,
         candidate_exam_id: int,
         performance,
+        dimensions: list | None = None,
     ) -> DigitalTwinState:
 
         overall_status = self._classify_overall_status(
@@ -55,6 +60,8 @@ class DigitalTwinEngine:
 
             overall_status=overall_status,
             summary=summary,
+
+            dimensions=dimensions or [],
         )
 
     @staticmethod

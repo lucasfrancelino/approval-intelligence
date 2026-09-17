@@ -118,11 +118,7 @@ class DecisionEngine:
         digital_twin,
     ) -> Decision | None:
 
-        dimensions = getattr(
-            digital_twin,
-            "dimensions",
-            [],
-        )
+        dimensions = digital_twin.dimensions
 
         candidates = []
 

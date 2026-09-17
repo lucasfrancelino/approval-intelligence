@@ -11,6 +11,10 @@ from app.services.dimension_service import (
 )
 
 
+GENERAL_DIMENSION = "Desempenho Geral"
+SUPPORTED_METRIC = "percentual_acerto"
+
+
 def get_digital_twin_service(
     db: Session,
     candidate_exam_id: int,
@@ -27,18 +31,29 @@ def get_digital_twin_service(
 
     for evidence in evidences:
 
-        # Evidências de dimensão específica não entram
-        # no cálculo do desempenho geral.
+        # Apenas evidências gerais participam do desempenho geral.
+        # Evidências de Português, Matemática, Direito etc. são
+        # processadas exclusivamente pelo Dimension Engine.
         if (
             evidence.dimension is not None
-            and evidence.dimension != "Desempenho Geral"
+            and evidence.dimension != GENERAL_DIMENSION
         ):
             continue
 
-        interpretation = evidence_engine.interpret(
-            evidence_type=evidence.evidence_type,
-            value=evidence.value,
-        )
+        if (
+            evidence.metric is not None
+            and evidence.metric != SUPPORTED_METRIC
+        ):
+            continue
+
+        try:
+            interpretation = evidence_engine.interpret(
+                evidence_type=evidence.evidence_type,
+                value=evidence.value,
+            )
+
+        except (ValueError, TypeError):
+            continue
 
         performance_values.append(interpretation.value)
 
@@ -59,11 +74,8 @@ def get_digital_twin_service(
 
     digital_twin_engine = DigitalTwinEngine()
 
-    digital_twin = digital_twin_engine.build(
+    return digital_twin_engine.build(
         candidate_exam_id=candidate_exam_id,
         performance=performance,
+        dimensions=dimensions,
     )
-
-    digital_twin.dimensions = dimensions
-
-    return digital_twin

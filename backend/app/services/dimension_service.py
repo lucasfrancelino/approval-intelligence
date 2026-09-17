@@ -8,6 +8,10 @@ from app.repositories.evidence_repository import (
 from app.schemas.dimension import DimensionAnalysisResponse
 
 
+GENERAL_DIMENSION = "Desempenho Geral"
+SUPPORTED_METRIC = "percentual_acerto"
+
+
 def analyze_dimensions_service(
     db: Session,
     candidate_exam_id: int,
@@ -25,10 +29,18 @@ def analyze_dimensions_service(
 
     for evidence in evidences:
 
-        if evidence.dimension is None:
+        # O desempenho geral é representado pelo bloco principal
+        # do Digital Twin e não deve ser duplicado nesta coleção.
+        if (
+            evidence.dimension is None
+            or evidence.dimension == GENERAL_DIMENSION
+        ):
             continue
 
-        if evidence.metric not in {None, "percentual_acerto"}:
+        if (
+            evidence.metric is not None
+            and evidence.metric != SUPPORTED_METRIC
+        ):
             continue
 
         try:
@@ -49,7 +61,7 @@ def analyze_dimensions_service(
 
     dimension_engine = DimensionEngine()
 
-    analyses = []
+    analyses: list[DimensionAnalysisResponse] = []
 
     for dimension, values in dimensions.items():
 
