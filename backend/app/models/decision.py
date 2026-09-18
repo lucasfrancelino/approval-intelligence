@@ -56,3 +56,10 @@ class Decision(Base):
     candidate_exam: Mapped["CandidateExam"] = relationship(
         back_populates="decisions",
     )
+
+    recommended_actions: Mapped[
+        list["RecommendedAction"]
+    ] = relationship(
+        back_populates="decision",
+        cascade="all, delete-orphan",
+    )

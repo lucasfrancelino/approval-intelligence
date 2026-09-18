@@ -25,12 +25,12 @@ def get_next_best_action(
     candidate_exam_id: int,
     db: Session = Depends(get_db),
 ):
-    decision = get_next_best_action_service(
+    result = get_next_best_action_service(
         db=db,
         candidate_exam_id=candidate_exam_id,
     )
 
-    if decision is None:
+    if result is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=(
@@ -39,6 +39,9 @@ def get_next_best_action(
             ),
         )
 
+    decision = result.decision
+    recommended_action = result.recommended_action
+
     return DecisionResponse(
         candidate_exam_id=candidate_exam_id,
         decision_type=decision.decision_type,
@@ -46,8 +49,11 @@ def get_next_best_action(
         action=decision.action,
         target_dimension=decision.target_dimension,
         reason=decision.reason,
+        operational_action=recommended_action.operational_action,
+        instructions=recommended_action.instructions,
+        action_id=result.action_id,
+        action_status=result.action_status,
     )
-
 
 @router.get(
     "/{candidate_exam_id}/decisions",

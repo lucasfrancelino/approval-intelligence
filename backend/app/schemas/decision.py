@@ -10,6 +10,10 @@ class DecisionResponse(BaseModel):
     action: str
     target_dimension: str | None
     reason: str
+    operational_action: str
+    instructions: str
+    action_id: int
+    action_status: str
 
 
 class DecisionHistoryResponse(BaseModel):
