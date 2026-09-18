@@ -8,8 +8,8 @@ from app.core.classification import (
 
 
 @dataclass
-class DimensionAnalysis:
-    dimension: str
+class DisciplineAnalysis:
+    discipline: str
     current_value: float
     previous_value: float
     variation: float
@@ -19,17 +19,15 @@ class DimensionAnalysis:
 
 
 class DimensionEngine:
-
     def analyze(
         self,
-        dimension: str,
+        discipline: str,
         values: list[float],
-    ) -> DimensionAnalysis:
-
+    ) -> DisciplineAnalysis:
         if len(values) < 2:
             raise ValueError(
                 "São necessárias pelo menos duas evidências "
-                "para analisar uma dimensão."
+                "para analisar uma disciplina."
             )
 
         current_value = values[-1]
@@ -40,8 +38,8 @@ class DimensionEngine:
         status = classify_status(direction)
         level = classify_level(current_value)
 
-        return DimensionAnalysis(
-            dimension=dimension,
+        return DisciplineAnalysis(
+            discipline=discipline,
             current_value=current_value,
             previous_value=previous_value,
             variation=variation,

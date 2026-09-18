@@ -12,20 +12,20 @@ def test_fluxo_real_do_digital_twin_ate_a_decisao_dimensional():
     evidences = [
         Mock(
             evidence_type="simulado",
-            dimension="Desempenho Geral",
+            discipline="geral",
             metric="percentual_acerto",
             value="Acertou 69% das questões",
         ),
         Mock(
             evidence_type="simulado",
-            dimension="Desempenho Geral",
+            discipline="geral",
             metric="percentual_acerto",
             value="Acertou 76% das questões",
         ),
     ]
 
     portuguese_analysis = SimpleNamespace(
-        dimension="Português",
+        discipline="Português",
         current_value=88.0,
         previous_value=93.0,
         variation=-5.0,
@@ -50,7 +50,7 @@ def test_fluxo_real_do_digital_twin_ate_a_decisao_dimensional():
         )
 
     assert digital_twin.dimensions
-    assert digital_twin.dimensions[0].dimension == "Português"
+    assert digital_twin.dimensions[0].discipline == "Português"
 
     decision = DecisionEngine().decide(
         digital_twin=digital_twin,
@@ -59,5 +59,5 @@ def test_fluxo_real_do_digital_twin_ate_a_decisao_dimensional():
     assert decision.decision_type == "monitoramento_dimensao"
     assert decision.priority == "media"
     assert decision.action == "investigar_queda_em_dimensao"
-    assert decision.target_dimension == "Português"
+    assert decision.target_discipline == "Português"
     assert "Português" in decision.reason

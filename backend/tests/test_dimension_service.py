@@ -8,25 +8,25 @@ def test_analyze_dimensions_service():
     evidences = [
         SimpleNamespace(
             evidence_type="simulado",
-            dimension="Matemática",
+            discipline="Matemática",
             metric="percentual_acerto",
             value="Acertou 61% das questões no último simulado",
         ),
         SimpleNamespace(
             evidence_type="simulado",
-            dimension="Matemática",
+            discipline="Matemática",
             metric="percentual_acerto",
             value="Acertou 55% das questões no último simulado",
         ),
         SimpleNamespace(
             evidence_type="simulado",
-            dimension="Português",
+            discipline="Português",
             metric="percentual_acerto",
             value="Acertou 72% das questões no último simulado",
         ),
         SimpleNamespace(
             evidence_type="simulado",
-            dimension="Português",
+            discipline="Português",
             metric="percentual_acerto",
             value="Acertou 78% das questões no último simulado",
         ),
@@ -47,13 +47,13 @@ def test_analyze_dimensions_service():
     matematica = next(
         item
         for item in result
-        if item.dimension == "Matemática"
+        if item.discipline == "Matemática"
     )
 
     portugues = next(
         item
         for item in result
-        if item.dimension == "Português"
+        if item.discipline == "Português"
     )
 
     assert matematica.current_value == 55
@@ -73,13 +73,13 @@ def test_analyze_dimensions_service_with_real_text_values():
     evidences = [
         SimpleNamespace(
             evidence_type="simulado",
-            dimension="Português",
+            discipline="Português",
             metric="percentual_acerto",
             value="Acertou 72% das questões no último simulado",
         ),
         SimpleNamespace(
             evidence_type="simulado",
-            dimension="Português",
+            discipline="Português",
             metric="percentual_acerto",
             value="Acertou 85% das questões no último simulado",
         ),
@@ -99,7 +99,7 @@ def test_analyze_dimensions_service_with_real_text_values():
 
     portugues = result[0]
 
-    assert portugues.dimension == "Português"
+    assert portugues.discipline == "Português"
     assert portugues.current_value == 85
     assert portugues.previous_value == 72
     assert portugues.variation == 13
@@ -107,30 +107,31 @@ def test_analyze_dimensions_service_with_real_text_values():
     assert portugues.status == "positivo"
     assert portugues.level == "excelente"
 
+
 def test_desempenho_geral_nao_e_exposto_como_dimensao():
 
     evidences = [
         SimpleNamespace(
             evidence_type="simulado",
-            dimension="Desempenho Geral",
+            discipline="geral",
             metric="percentual_acerto",
             value="Acertou 72% das questões",
         ),
         SimpleNamespace(
             evidence_type="simulado",
-            dimension="Desempenho Geral",
+            discipline="geral",
             metric="percentual_acerto",
             value="Acertou 78% das questões",
         ),
         SimpleNamespace(
             evidence_type="simulado",
-            dimension="Português",
+            discipline="Português",
             metric="percentual_acerto",
             value="Acertou 72% das questões de Português",
         ),
         SimpleNamespace(
             evidence_type="simulado",
-            dimension="Português",
+            discipline="Português",
             metric="percentual_acerto",
             value="Acertou 78% das questões de Português",
         ),
@@ -146,10 +147,10 @@ def test_desempenho_geral_nao_e_exposto_como_dimensao():
             candidate_exam_id=1,
         )
 
-    dimensions = {
-        item.dimension
+    disciplines = {
+        item.discipline
         for item in result
     }
 
-    assert "Desempenho Geral" not in dimensions
-    assert "Português" in dimensions
+    assert "geral" not in disciplines
+    assert "Português" in disciplines

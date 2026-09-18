@@ -6,30 +6,28 @@ class Decision:
     decision_type: str
     priority: str
     action: str
-    target_dimension: str | None
+    target_discipline: str | None
     reason: str
 
 
 class DecisionEngine:
-
     def decide(
         self,
         digital_twin,
     ) -> Decision:
-
-        dimension_decision = self._analyze_dimensions(
+        discipline_decision = self._analyze_disciplines(
             digital_twin=digital_twin,
         )
 
-        if dimension_decision is not None:
-            return dimension_decision
+        if discipline_decision is not None:
+            return discipline_decision
 
         if digital_twin.performance_level == "critico":
             return Decision(
                 decision_type="intervencao_desempenho",
                 priority="alta",
                 action="reforcar_base",
-                target_dimension=None,
+                target_discipline=None,
                 reason=(
                     "O desempenho atual está em nível crítico. "
                     "A prioridade deve ser reforçar a base de conhecimento "
@@ -45,7 +43,7 @@ class DecisionEngine:
                 decision_type="correcao_desempenho",
                 priority="alta",
                 action="revisar_pontos_fracos",
-                target_dimension=None,
+                target_discipline=None,
                 reason=(
                     "O candidato apresenta desempenho abaixo do nível desejado "
                     "e tendência de queda. A prioridade deve ser revisar "
@@ -61,11 +59,10 @@ class DecisionEngine:
                 decision_type="consolidacao",
                 priority="media",
                 action="consolidar_aprendizado",
-                target_dimension=None,
+                target_discipline=None,
                 reason=(
                     "O desempenho ainda exige atenção, mas apresenta evolução. "
-                    "A prioridade deve ser consolidar o aprendizado "
-                    "sem interromper a trajetória de evolução."
+                    "A prioridade deve ser consolidar o aprendizado."
                 ),
             )
 
@@ -77,11 +74,10 @@ class DecisionEngine:
                 decision_type="monitoramento",
                 priority="media",
                 action="investigar_queda",
-                target_dimension=None,
+                target_discipline=None,
                 reason=(
                     "O nível atual de desempenho é positivo, porém existe "
-                    "uma tendência recente de queda. É necessário investigar "
-                    "a causa antes de aumentar a carga ou complexidade."
+                    "uma tendência recente de queda."
                 ),
             )
 
@@ -93,11 +89,10 @@ class DecisionEngine:
                 decision_type="progressao",
                 priority="baixa",
                 action="aumentar_desafio",
-                target_dimension=None,
+                target_discipline=None,
                 reason=(
                     "O candidato apresenta bom desempenho e evolução. "
-                    "A próxima ação pode aumentar gradualmente "
-                    "o nível de desafio."
+                    "A próxima ação pode aumentar gradualmente o desafio."
                 ),
             )
 
@@ -105,40 +100,36 @@ class DecisionEngine:
             decision_type="estabilizacao",
             priority="media",
             action="manter_e_observar",
-            target_dimension=None,
+            target_discipline=None,
             reason=(
-                "O desempenho atual não apresenta uma condição suficiente "
-                "para uma intervenção mais específica. "
-                "O estado deve ser monitorado."
+                "O desempenho atual não apresenta condição suficiente "
+                "para uma intervenção mais específica."
             ),
         )
 
-    def _analyze_dimensions(
+    def _analyze_disciplines(
         self,
         digital_twin,
     ) -> Decision | None:
-
-        dimensions = digital_twin.dimensions
-
+        disciplines = digital_twin.dimensions
         candidates = []
 
-        for dimension in dimensions:
-
+        for discipline in disciplines:
             if (
-                dimension.direction != "queda"
-                or dimension.variation >= 0
+                discipline.direction != "queda"
+                or discipline.variation >= 0
             ):
                 continue
 
-            priority = self._classify_dimension_priority(
-                dimension=dimension,
+            priority = self._classify_discipline_priority(
+                discipline=discipline,
             )
 
             candidates.append(
                 (
                     priority,
-                    abs(dimension.variation),
-                    dimension,
+                    abs(discipline.variation),
+                    discipline,
                 )
             )
 
@@ -159,46 +150,34 @@ class DecisionEngine:
             reverse=True,
         )
 
-        priority, _, dimension = candidates[0]
+        priority, _, discipline = candidates[0]
 
         return Decision(
             decision_type="monitoramento_dimensao",
             priority=priority,
             action="investigar_queda_em_dimensao",
-            target_dimension=dimension.dimension,
+            target_discipline=discipline.discipline,
             reason=(
-                f"A dimensão {dimension.dimension} "
-                f"apresenta queda de {abs(dimension.variation):.1f} "
-                "pontos percentuais nas evidências mais recentes. "
-                "A prioridade deve ser investigar a causa da queda "
-                "antes de aumentar a carga ou complexidade."
+                f"A disciplina {discipline.discipline} apresenta queda de "
+                f"{abs(discipline.variation):.1f} pontos percentuais nas "
+                "evidências mais recentes."
             ),
         )
 
     @staticmethod
-    def _classify_dimension_priority(
-        dimension,
+    def _classify_discipline_priority(
+        discipline,
     ) -> str:
-
-        if dimension.level == "critico":
+        if discipline.level == "critico":
             return "alta"
 
         if (
-            dimension.level == "atencao"
-            and dimension.direction == "queda"
+            discipline.level == "atencao"
+            and discipline.direction == "queda"
         ):
             return "alta"
 
-        if (
-            dimension.level == "bom"
-            and dimension.direction == "queda"
-        ):
-            return "media"
-
-        if (
-            dimension.level == "excelente"
-            and dimension.direction == "queda"
-        ):
+        if discipline.level in {"bom", "excelente"}:
             return "media"
 
         return "baixa"

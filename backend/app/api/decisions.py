@@ -46,7 +46,7 @@ def get_next_best_action(
         decision_type=result.decision.decision_type,
         priority=result.decision.priority,
         action=result.decision.action,
-        target_dimension=result.decision.target_dimension,
+        target_discipline=result.decision.target_discipline,
         reason=result.decision.reason,
         operational_action=result.recommended_action.operational_action,
         instructions=result.recommended_action.instructions,
@@ -75,7 +75,7 @@ def get_decision_history(
             decision_type=decision.decision_type,
             priority=decision.priority,
             action=decision.action,
-            target_dimension=decision.target_dimension,
+            target_discipline=decision.target_discipline,
             reason=decision.reason,
             created_at=decision.created_at,
         )

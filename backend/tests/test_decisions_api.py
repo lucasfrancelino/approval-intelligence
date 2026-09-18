@@ -5,7 +5,6 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 
-
 client = TestClient(app)
 
 
@@ -34,5 +33,5 @@ def test_next_best_action_endpoint():
     assert data["decision_type"] == "progressao"
     assert data["priority"] == "baixa"
     assert data["action"] == "aumentar_desafio"
-    assert data["target_dimension"] is None
+    assert data["target_discipline"] is None
     assert "reason" in data

@@ -11,7 +11,7 @@ from app.core.constants import (
 
 @dataclass
 class EvidenceInterpretation:
-    dimension: str
+    discipline: str
     metric: str
     value: float
     unit: str
@@ -74,7 +74,7 @@ class EvidenceEngine:
         )
 
         return EvidenceInterpretation(
-            dimension="desempenho",
+            discipline="desempenho",
             metric=SUPPORTED_METRIC,
             value=percentage,
             unit="percent",

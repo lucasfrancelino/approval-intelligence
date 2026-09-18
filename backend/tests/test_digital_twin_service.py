@@ -11,42 +11,42 @@ def test_desempenho_geral_nao_deve_ser_contaminado_por_dimensoes():
     evidences = [
         Mock(
             evidence_type="simulado",
-            dimension="Desempenho Geral",
+            discipline="geral",
             metric="percentual_acerto",
             value="Acertou 72% das questões",
             observed_at=datetime(2026, 1, 1),
         ),
         Mock(
             evidence_type="simulado",
-            dimension="Português",
+            discipline="Português",
             metric="percentual_acerto",
             value="Acertou 93% das questões de Português",
             observed_at=datetime(2026, 1, 2),
         ),
         Mock(
             evidence_type="simulado",
-            dimension="Desempenho Geral",
+            discipline="geral",
             metric="percentual_acerto",
             value="Acertou 64% das questões",
             observed_at=datetime(2026, 1, 3),
         ),
         Mock(
             evidence_type="simulado",
-            dimension="Desempenho Geral",
+            discipline="geral",
             metric="percentual_acerto",
             value="Acertou 69% das questões",
             observed_at=datetime(2026, 1, 4),
         ),
         Mock(
             evidence_type="simulado",
-            dimension="Desempenho Geral",
+            discipline="geral",
             metric="percentual_acerto",
             value="Acertou 76% das questões",
             observed_at=datetime(2026, 1, 5),
         ),
         Mock(
             evidence_type="simulado",
-            dimension="Português",
+            discipline="Português",
             metric="percentual_acerto",
             value="Acertou 88% das questões de Português",
             observed_at=datetime(2026, 1, 6),
@@ -64,7 +64,7 @@ def test_desempenho_geral_nao_deve_ser_contaminado_por_dimensoes():
         "analyze_dimensions_service",
         return_value=[
             Mock(
-                dimension="Português",
+                discipline="Português",
                 current_value=88.0,
                 previous_value=93.0,
                 variation=-5.0,
@@ -85,11 +85,11 @@ def test_desempenho_geral_nao_deve_ser_contaminado_por_dimensoes():
     assert result.performance_variation == 7.0
 
     dimensions = {
-        dimension.dimension: dimension
+        dimension.discipline: dimension
         for dimension in result.dimensions
     }
 
-    assert "Desempenho Geral" not in dimensions
+    assert "geral" not in dimensions
     assert dimensions["Português"].current_value == 88.0
 
 
@@ -98,21 +98,21 @@ def test_metricas_nao_suportadas_nao_entram_no_desempenho_geral():
     evidences = [
         Mock(
             evidence_type="simulado",
-            dimension="Desempenho Geral",
+            discipline="geral",
             metric="percentual_acerto",
             value="Acertou 70% das questões",
             observed_at=datetime(2026, 1, 1),
         ),
         Mock(
             evidence_type="simulado",
-            dimension="Desempenho Geral",
+            discipline="geral",
             metric="tempo_medio",
             value="Tempo médio de 90 segundos",
             observed_at=datetime(2026, 1, 2),
         ),
         Mock(
             evidence_type="simulado",
-            dimension="Desempenho Geral",
+            discipline="geral",
             metric="percentual_acerto",
             value="Acertou 75% das questões",
             observed_at=datetime(2026, 1, 3),

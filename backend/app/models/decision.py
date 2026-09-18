@@ -36,7 +36,7 @@ class Decision(Base):
         nullable=False,
     )
 
-    target_dimension: Mapped[str | None] = mapped_column(
+    target_discipline: Mapped[str | None] = mapped_column(
         String(150),
         nullable=True,
     )

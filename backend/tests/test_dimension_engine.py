@@ -7,11 +7,11 @@ def test_dimension_evolution():
     engine = DimensionEngine()
 
     result = engine.analyze(
-        dimension="Português",
+        discipline="Português",
         values=[72, 78],
     )
 
-    assert result.dimension == "Português"
+    assert result.discipline == "Português"
     assert result.current_value == 78
     assert result.previous_value == 72
     assert result.variation == 6
@@ -24,11 +24,11 @@ def test_dimension_drop():
     engine = DimensionEngine()
 
     result = engine.analyze(
-        dimension="Matemática",
+        discipline="Matemática",
         values=[61, 55],
     )
 
-    assert result.dimension == "Matemática"
+    assert result.discipline == "Matemática"
     assert result.current_value == 55
     assert result.previous_value == 61
     assert result.variation == -6
@@ -41,11 +41,11 @@ def test_dimension_stable():
     engine = DimensionEngine()
 
     result = engine.analyze(
-        dimension="Direito",
+        discipline="Direito",
         values=[80, 80],
     )
 
-    assert result.dimension == "Direito"
+    assert result.discipline == "Direito"
     assert result.variation == 0
     assert result.direction == "estavel"
     assert result.status == "neutro"
@@ -56,7 +56,7 @@ def test_dimension_critical_level():
     engine = DimensionEngine()
 
     result = engine.analyze(
-        dimension="Física",
+        discipline="Física",
         values=[45, 42],
     )
 
@@ -68,7 +68,7 @@ def test_dimension_excellent_level():
     engine = DimensionEngine()
 
     result = engine.analyze(
-        dimension="Direito",
+        discipline="Direito",
         values=[88, 92],
     )
 
@@ -81,6 +81,6 @@ def test_dimension_requires_two_evidences():
 
     with pytest.raises(ValueError):
         engine.analyze(
-            dimension="Português",
+            discipline="Português",
             values=[80],
         )

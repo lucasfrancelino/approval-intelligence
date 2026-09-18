@@ -14,7 +14,7 @@ def create_decision(
         decision_type=decision.decision_type,
         priority=decision.priority,
         action=decision.action,
-        target_dimension=decision.target_dimension,
+        target_discipline=decision.target_discipline,
         reason=decision.reason,
     )
 
@@ -28,12 +28,14 @@ def create_decision(
 def get_decisions_by_candidate_exam(
     db: Session,
     candidate_exam_id: int,
-) -> list[DecisionModel]:
+):
     return (
         db.query(DecisionModel)
         .filter(
             DecisionModel.candidate_exam_id == candidate_exam_id,
         )
-        .order_by(DecisionModel.created_at.desc())
+        .order_by(
+            DecisionModel.created_at.desc(),
+        )
         .all()
     )

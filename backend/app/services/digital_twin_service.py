@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from app.core.constants import (
     EVIDENCE_TYPE_SIMULADO,
-    GENERAL_DIMENSION,
+    GENERAL_DISCIPLINE,
     SUPPORTED_METRIC,
 )
 from app.engines.digital_twin_engine import DigitalTwinEngine
@@ -27,17 +27,12 @@ def get_digital_twin_service(
     )
 
     evidence_engine = EvidenceEngine()
-
-    performance_values = []
+    performance_values: list[float] = []
 
     for evidence in evidences:
-
-        # Apenas evidências gerais participam do desempenho geral.
-        # Evidências de Português, Matemática, Direito etc. são
-        # processadas exclusivamente pelo Dimension Engine.
         if (
-            evidence.dimension is not None
-            and evidence.dimension != GENERAL_DIMENSION
+            evidence.discipline is not None
+            and evidence.discipline != GENERAL_DISCIPLINE
         ):
             continue
 
@@ -52,11 +47,12 @@ def get_digital_twin_service(
                 evidence_type=evidence.evidence_type,
                 value=evidence.value,
             )
-
         except (ValueError, TypeError):
             continue
 
-        performance_values.append(interpretation.value)
+        performance_values.append(
+            float(interpretation.value)
+        )
 
     performance_engine = PerformanceEngine()
 
@@ -64,11 +60,10 @@ def get_digital_twin_service(
         performance = performance_engine.analyze(
             values=performance_values,
         )
-
     except ValueError:
         return None
 
-    dimensions = analyze_dimensions_service(
+    disciplines = analyze_dimensions_service(
         db=db,
         candidate_exam_id=candidate_exam_id,
     )
@@ -78,5 +73,5 @@ def get_digital_twin_service(
     return digital_twin_engine.build(
         candidate_exam_id=candidate_exam_id,
         performance=performance,
-        dimensions=dimensions,
+        dimensions=disciplines,
     )

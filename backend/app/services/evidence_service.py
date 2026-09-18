@@ -26,7 +26,7 @@ def create_evidence_service(
         db=db,
         candidate_exam_id=candidate_exam_id,
         evidence_type=data.evidence_type,
-        dimension=data.dimension,
+        discipline=data.discipline,
         metric=data.metric,
         source_type=data.source_type,
         value=data.value,
@@ -58,7 +58,7 @@ def interpret_evidence_service(
 
     return EvidenceInterpretationResponse(
         evidence_id=evidence.id,
-        dimension=interpretation.dimension,
+        discipline=interpretation.discipline,
         metric=interpretation.metric,
         value=interpretation.value,
         unit=interpretation.unit,

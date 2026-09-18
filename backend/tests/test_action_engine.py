@@ -11,7 +11,7 @@ def test_traduz_investigar_queda_em_dimensao():
         decision_type="monitoramento_dimensao",
         priority="media",
         action="investigar_queda_em_dimensao",
-        target_dimension="Português",
+        target_discipline="Português",
         reason="queda detectada",
     )
 
@@ -28,7 +28,7 @@ def test_traduz_reforcar_base():
         decision_type="intervencao_desempenho",
         priority="alta",
         action="reforcar_base",
-        target_dimension=None,
+        target_discipline=None,
         reason="desempenho critico",
     )
 
@@ -44,7 +44,7 @@ def test_traduz_revisar_pontos_fracos():
         decision_type="correcao_desempenho",
         priority="alta",
         action="revisar_pontos_fracos",
-        target_dimension=None,
+        target_discipline=None,
         reason="queda com atencao",
     )
 
@@ -60,7 +60,7 @@ def test_traduz_consolidar_aprendizado():
         decision_type="consolidacao",
         priority="media",
         action="consolidar_aprendizado",
-        target_dimension=None,
+        target_discipline=None,
         reason="atencao com evolucao",
     )
 
@@ -76,7 +76,7 @@ def test_traduz_investigar_queda():
         decision_type="monitoramento",
         priority="media",
         action="investigar_queda",
-        target_dimension=None,
+        target_discipline=None,
         reason="bom com queda",
     )
 
@@ -92,7 +92,7 @@ def test_traduz_aumentar_desafio():
         decision_type="progressao",
         priority="baixa",
         action="aumentar_desafio",
-        target_dimension=None,
+        target_discipline=None,
         reason="bom com evolucao",
     )
 
@@ -108,7 +108,7 @@ def test_traduz_manter_e_observar():
         decision_type="estabilizacao",
         priority="media",
         action="manter_e_observar",
-        target_dimension=None,
+        target_discipline=None,
         reason="estavel",
     )
 
@@ -124,7 +124,7 @@ def test_acao_nao_suportada_gera_erro():
         decision_type="tipo_invalido",
         priority="baixa",
         action="acao_inexistente",
-        target_dimension=None,
+        target_discipline=None,
         reason="teste",
     )
 

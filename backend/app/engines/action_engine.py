@@ -33,7 +33,7 @@ class ActionEngine:
             operational_action="revisar_conteudos_da_dimensao",
             instructions=(
                 f"Revisar os conteúdos relacionados a "
-                f"{decision.target_dimension} antes de realizar "
+                f"{decision.target_discipline} antes de realizar "
                 "um novo bloco de questões sobre o tema."
             ),
         )

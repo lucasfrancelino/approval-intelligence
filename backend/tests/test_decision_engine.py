@@ -106,6 +106,7 @@ def test_stable_performance_requires_monitoring():
     assert decision.priority == "media"
     assert decision.action == "manter_e_observar"
 
+
 def test_decision_considera_queda_em_uma_dimensao():
     engine = DecisionEngine()
 
@@ -114,7 +115,7 @@ def test_decision_considera_queda_em_uma_dimensao():
         performance_direction="evolucao",
         dimensions=[
             SimpleNamespace(
-                dimension="Português",
+                discipline="Português",
                 current_value=88.0,
                 previous_value=93.0,
                 variation=-5.0,
@@ -133,6 +134,7 @@ def test_decision_considera_queda_em_uma_dimensao():
     assert result.priority == "media"
     assert result.action == "investigar_queda_em_dimensao"
 
+
 def test_decision_dimensao_excelente_em_queda():
     engine = DecisionEngine()
     digital_twin = SimpleNamespace(
@@ -140,7 +142,7 @@ def test_decision_dimensao_excelente_em_queda():
         performance_direction="evolucao",
         dimensions=[
             SimpleNamespace(
-                dimension="Português",
+                discipline="Português",
                 current_value=88.0,
                 previous_value=93.0,
                 variation=-5.0,
@@ -156,6 +158,7 @@ def test_decision_dimensao_excelente_em_queda():
     assert result.priority == "media"
     assert result.action == "investigar_queda_em_dimensao"
 
+
 def test_decision_dimensao_critica_em_queda():
     engine = DecisionEngine()
     digital_twin = SimpleNamespace(
@@ -163,7 +166,7 @@ def test_decision_dimensao_critica_em_queda():
         performance_direction="evolucao",
         dimensions=[
             SimpleNamespace(
-                dimension="Matemática",
+                discipline="Matemática",
                 current_value=48.0,
                 previous_value=72.0,
                 variation=-24.0,
@@ -179,6 +182,7 @@ def test_decision_dimensao_critica_em_queda():
     assert result.priority == "alta"
     assert result.action == "investigar_queda_em_dimensao"
 
+
 def test_decision_seleciona_dimensao_de_maior_prioridade():
 
     engine = DecisionEngine()
@@ -188,7 +192,7 @@ def test_decision_seleciona_dimensao_de_maior_prioridade():
         performance_direction="evolucao",
         dimensions=[
             SimpleNamespace(
-                dimension="Português",
+                discipline="Português",
                 current_value=88.0,
                 previous_value=93.0,
                 variation=-5.0,
@@ -197,7 +201,7 @@ def test_decision_seleciona_dimensao_de_maior_prioridade():
                 level="excelente",
             ),
             SimpleNamespace(
-                dimension="Matemática",
+                discipline="Matemática",
                 current_value=48.0,
                 previous_value=72.0,
                 variation=-24.0,
@@ -226,7 +230,7 @@ def test_decision_em_empate_seleciona_maior_queda():
         performance_direction="evolucao",
         dimensions=[
             SimpleNamespace(
-                dimension="Português",
+                discipline="Português",
                 current_value=88.0,
                 previous_value=93.0,
                 variation=-5.0,
@@ -235,7 +239,7 @@ def test_decision_em_empate_seleciona_maior_queda():
                 level="bom",
             ),
             SimpleNamespace(
-                dimension="Direito",
+                discipline="Direito",
                 current_value=72.0,
                 previous_value=80.0,
                 variation=-8.0,
@@ -253,4 +257,3 @@ def test_decision_em_empate_seleciona_maior_queda():
     assert result.priority == "media"
     assert result.action == "investigar_queda_em_dimensao"
     assert "Direito" in result.reason
-

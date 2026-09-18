@@ -26,7 +26,7 @@ class Evidence(Base):
         nullable=False,
     )
 
-    dimension: Mapped[str | None] = mapped_column(
+    discipline: Mapped[str | None] = mapped_column(
         String(150),
         nullable=True,
         index=True,

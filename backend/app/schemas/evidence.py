@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 
 class EvidenceCreate(BaseModel):
     evidence_type: str
-    dimension: str | None = None
+    discipline: str | None = None
     metric: str | None = None
     source_type: str
     value: str
@@ -20,7 +20,7 @@ class EvidenceResponse(BaseModel):
     id: int
     candidate_exam_id: int
     evidence_type: str
-    dimension: str | None
+    discipline: str | None
     metric: str | None
     source_type: str
     value: str
@@ -32,12 +32,13 @@ class EvidenceResponse(BaseModel):
 
 class EvidenceInterpretationResponse(BaseModel):
     evidence_id: int
-    dimension: str
+    discipline: str
     metric: str
     value: float
     unit: str
     status: str
     interpretation: str
+
 
 class TrendAnalysisResponse(BaseModel):
     metric: str

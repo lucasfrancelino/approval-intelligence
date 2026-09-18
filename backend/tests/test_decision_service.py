@@ -45,7 +45,7 @@ def test_get_next_best_action_service():
     assert decision.decision_type == "progressao"
     assert decision.priority == "baixa"
     assert decision.action == "aumentar_desafio"
-    assert decision.target_dimension is None
+    assert decision.target_discipline is None
 
     assert (
         recommended_action.operational_action

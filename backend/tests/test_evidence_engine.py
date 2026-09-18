@@ -14,7 +14,7 @@ def test_interpret_simulado_com_72_porcento():
         value="Acertou 72% das questões no último simulado",
     )
 
-    assert result.dimension == "desempenho"
+    assert result.discipline == "desempenho"
     assert result.metric == "percentual_acerto"
     assert result.value == 72.0
     assert result.unit == "percent"
@@ -82,7 +82,7 @@ def test_interpretador_customizado_pode_ser_registrado():
         value: str,
     ) -> EvidenceInterpretation:
         return EvidenceInterpretation(
-            dimension="rotina_estudo",
+            discipline="rotina_estudo",
             metric="horas_estudo",
             value=float(value),
             unit="horas",
@@ -102,7 +102,7 @@ def test_interpretador_customizado_pode_ser_registrado():
         value="4",
     )
 
-    assert result.dimension == "rotina_estudo"
+    assert result.discipline == "rotina_estudo"
     assert result.metric == "horas_estudo"
     assert result.value == 4.0
     assert result.unit == "horas"
@@ -116,7 +116,7 @@ def test_tipo_de_evidencia_customizado_e_normalizado():
         value: str,
     ) -> EvidenceInterpretation:
         return EvidenceInterpretation(
-            dimension="risco",
+            discipline="risco",
             metric="nivel_risco",
             value=float(value),
             unit="nivel",

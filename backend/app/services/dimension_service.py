@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from app.core.constants import (
     EVIDENCE_TYPE_SIMULADO,
-    GENERAL_DIMENSION,
+    GENERAL_DISCIPLINE,
     SUPPORTED_METRIC,
 )
 from app.engines.dimension_engine import DimensionEngine
@@ -17,7 +17,6 @@ def analyze_dimensions_service(
     db: Session,
     candidate_exam_id: int,
 ) -> list[DimensionAnalysisResponse]:
-
     evidences = get_evidences_by_candidate_exam(
         db=db,
         candidate_exam_id=candidate_exam_id,
@@ -26,15 +25,12 @@ def analyze_dimensions_service(
 
     evidence_engine = EvidenceEngine()
 
-    dimensions: dict[str, list[float]] = {}
+    disciplines: dict[str, list[float]] = {}
 
     for evidence in evidences:
-
-        # O desempenho geral é representado pelo bloco principal
-        # do Digital Twin e não deve ser duplicado nesta coleção.
         if (
-            evidence.dimension is None
-            or evidence.dimension == GENERAL_DIMENSION
+            evidence.discipline is None
+            or evidence.discipline == GENERAL_DISCIPLINE
         ):
             continue
 
@@ -49,34 +45,30 @@ def analyze_dimensions_service(
                 evidence_type=evidence.evidence_type,
                 value=evidence.value,
             )
-
-            value = float(interpretation.value)
-
         except (ValueError, TypeError):
             continue
 
-        dimensions.setdefault(
-            evidence.dimension,
+        disciplines.setdefault(
+            evidence.discipline,
             [],
-        ).append(value)
+        ).append(float(interpretation.value))
 
     dimension_engine = DimensionEngine()
 
     analyses: list[DimensionAnalysisResponse] = []
 
-    for dimension, values in dimensions.items():
-
+    for discipline, values in disciplines.items():
         if len(values) < 2:
             continue
 
         analysis = dimension_engine.analyze(
-            dimension=dimension,
+            discipline=discipline,
             values=values,
         )
 
         analyses.append(
             DimensionAnalysisResponse(
-                dimension=analysis.dimension,
+                discipline=analysis.discipline,
                 current_value=analysis.current_value,
                 previous_value=analysis.previous_value,
                 variation=analysis.variation,

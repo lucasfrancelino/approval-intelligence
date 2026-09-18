@@ -8,7 +8,7 @@ class DecisionResponse(BaseModel):
     decision_type: str
     priority: str
     action: str
-    target_dimension: str | None
+    target_discipline: str | None
     reason: str
     operational_action: str
     instructions: str
@@ -22,6 +22,6 @@ class DecisionHistoryResponse(BaseModel):
     decision_type: str
     priority: str
     action: str
-    target_dimension: str | None
+    target_discipline: str | None
     reason: str
     created_at: datetime

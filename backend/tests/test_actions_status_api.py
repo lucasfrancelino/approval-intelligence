@@ -15,6 +15,7 @@ def test_update_action_status_api_with_real_database():
                 """
                 SELECT id
                 FROM recommended_actions
+                WHERE status = 'recommended'
                 ORDER BY id
                 LIMIT 1
                 """
@@ -44,3 +45,17 @@ def test_update_action_status_api_with_real_database():
     assert "operational_action" in body
     assert "instructions" in body
     assert "created_at" in body
+
+    with engine.begin() as connection:
+        connection.execute(
+            text(
+                """
+                UPDATE recommended_actions
+                SET status = 'recommended'
+                WHERE id = :action_id
+                """
+            ),
+            {
+                "action_id": action_id,
+            },
+        )

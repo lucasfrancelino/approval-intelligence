@@ -1,4 +1,4 @@
-GENERAL_DIMENSION = "Desempenho Geral"
+GENERAL_DISCIPLINE = "geral"
 
 SUPPORTED_METRIC = "percentual_acerto"
 
