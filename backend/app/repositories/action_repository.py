@@ -39,6 +39,35 @@ def get_actions_by_candidate_exam(
         .filter(
             DecisionModel.candidate_exam_id == candidate_exam_id,
         )
-        .order_by(RecommendedActionModel.created_at.desc())
+        .order_by(
+            RecommendedActionModel.created_at.desc(),
+        )
         .all()
     )
+
+
+def get_action_by_id(
+    db: Session,
+    action_id: int,
+) -> RecommendedActionModel | None:
+    return (
+        db.query(RecommendedActionModel)
+        .filter(
+            RecommendedActionModel.id == action_id,
+        )
+        .first()
+    )
+
+
+def update_action_status(
+    db: Session,
+    action_model: RecommendedActionModel,
+    new_status: str,
+) -> RecommendedActionModel:
+    action_model.status = new_status
+
+    db.add(action_model)
+    db.commit()
+    db.refresh(action_model)
+
+    return action_model

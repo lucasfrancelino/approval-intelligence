@@ -10,6 +10,7 @@ from app.api.evidences import router as evidences_router
 from app.api.digital_twin import router as digital_twin_router
 from app.api.decisions import router as decisions_router
 from app.api.dimensions import router as dimensions_router
+from app.api.actions import router as actions_router
 
 app = FastAPI(
     title=settings.app_name,
@@ -43,6 +44,11 @@ app.include_router(
 )
 app.include_router(
     dimensions_router,
+    prefix="/api",
+)
+
+app.include_router(
+    actions_router,
     prefix="/api",
 )
 
