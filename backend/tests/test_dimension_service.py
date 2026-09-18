@@ -61,12 +61,16 @@ def test_analyze_dimensions_service():
     assert matematica.variation == -6
     assert matematica.direction == "queda"
     assert matematica.level == "atencao"
+    assert matematica.classification == "gap"
+    assert matematica.gap_type == "nivel_e_tendencia"
 
     assert portugues.current_value == 78
     assert portugues.previous_value == 72
     assert portugues.variation == 6
     assert portugues.direction == "evolucao"
     assert portugues.level == "bom"
+    assert portugues.classification == "forca"
+    assert portugues.gap_type == "nenhum"
 
 
 def test_analyze_dimensions_service_with_real_text_values():
@@ -106,9 +110,11 @@ def test_analyze_dimensions_service_with_real_text_values():
     assert portugues.direction == "evolucao"
     assert portugues.status == "positivo"
     assert portugues.level == "excelente"
+    assert portugues.classification == "forca"
+    assert portugues.gap_type == "nenhum"
 
 
-def test_desempenho_geral_nao_e_exposto_como_dimensao():
+def test_desempenho_geral_nao_e_exposto_como_disciplina():
 
     evidences = [
         SimpleNamespace(

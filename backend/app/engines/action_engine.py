@@ -25,7 +25,7 @@ class ActionEngine:
 
         return translator(decision)
 
-    def _translate_investigar_queda_em_dimensao(
+    def _translate_investigar_queda_em_disciplina(
         self,
         decision: Decision,
     ) -> RecommendedAction:
@@ -115,8 +115,8 @@ class ActionEngine:
     @property
     def _translators(self):
         return {
-            "investigar_queda_em_dimensao": (
-                self._translate_investigar_queda_em_dimensao
+            "investigar_queda_em_disciplina": (
+                self._translate_investigar_queda_em_disciplina
             ),
             "reforcar_base": self._translate_reforcar_base,
             "revisar_pontos_fracos": self._translate_revisar_pontos_fracos,

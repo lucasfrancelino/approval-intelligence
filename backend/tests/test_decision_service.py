@@ -11,7 +11,7 @@ def test_get_next_best_action_service():
     digital_twin = SimpleNamespace(
         performance_level="bom",
         performance_direction="evolucao",
-        dimensions=[],
+        disciplines=[],
     )
 
     with patch(

@@ -49,8 +49,8 @@ def test_fluxo_real_do_digital_twin_ate_a_decisao_dimensional():
             candidate_exam_id=1,
         )
 
-    assert digital_twin.dimensions
-    assert digital_twin.dimensions[0].discipline == "Português"
+    assert digital_twin.disciplines
+    assert digital_twin.disciplines[0].discipline == "Português"
 
     decision = DecisionEngine().decide(
         digital_twin=digital_twin,
@@ -58,6 +58,6 @@ def test_fluxo_real_do_digital_twin_ate_a_decisao_dimensional():
 
     assert decision.decision_type == "monitoramento_dimensao"
     assert decision.priority == "media"
-    assert decision.action == "investigar_queda_em_dimensao"
+    assert decision.action == "investigar_queda_em_disciplina"
     assert decision.target_discipline == "Português"
     assert "Português" in decision.reason

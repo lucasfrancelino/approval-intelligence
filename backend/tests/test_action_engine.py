@@ -4,13 +4,13 @@ from app.engines.action_engine import ActionEngine
 from app.engines.decision_engine import Decision
 
 
-def test_traduz_investigar_queda_em_dimensao():
+def test_traduz_investigar_queda_em_disciplina():
     engine = ActionEngine()
 
     decision = Decision(
-        decision_type="monitoramento_dimensao",
+        decision_type="monitoramento_disciplina",
         priority="media",
-        action="investigar_queda_em_dimensao",
+        action="investigar_queda_em_disciplina",
         target_discipline="Português",
         reason="queda detectada",
     )

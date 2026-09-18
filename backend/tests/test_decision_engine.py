@@ -7,7 +7,7 @@ def build_twin(level: str, direction: str):
     return SimpleNamespace(
         performance_level=level,
         performance_direction=direction,
-        dimensions=[],
+        disciplines=[],
     )
 
 
@@ -113,7 +113,7 @@ def test_decision_considera_queda_em_uma_dimensao():
     digital_twin = SimpleNamespace(
         performance_level="excelente",
         performance_direction="evolucao",
-        dimensions=[
+        disciplines=[
             SimpleNamespace(
                 discipline="Português",
                 current_value=88.0,
@@ -132,7 +132,7 @@ def test_decision_considera_queda_em_uma_dimensao():
 
     assert result.decision_type == "monitoramento_dimensao"
     assert result.priority == "media"
-    assert result.action == "investigar_queda_em_dimensao"
+    assert result.action == "investigar_queda_em_disciplina"
 
 
 def test_decision_dimensao_excelente_em_queda():
@@ -140,7 +140,7 @@ def test_decision_dimensao_excelente_em_queda():
     digital_twin = SimpleNamespace(
         performance_level="excelente",
         performance_direction="evolucao",
-        dimensions=[
+        disciplines=[
             SimpleNamespace(
                 discipline="Português",
                 current_value=88.0,
@@ -156,7 +156,7 @@ def test_decision_dimensao_excelente_em_queda():
         digital_twin=digital_twin,
     )
     assert result.priority == "media"
-    assert result.action == "investigar_queda_em_dimensao"
+    assert result.action == "investigar_queda_em_disciplina"
 
 
 def test_decision_dimensao_critica_em_queda():
@@ -164,7 +164,7 @@ def test_decision_dimensao_critica_em_queda():
     digital_twin = SimpleNamespace(
         performance_level="excelente",
         performance_direction="evolucao",
-        dimensions=[
+        disciplines=[
             SimpleNamespace(
                 discipline="Matemática",
                 current_value=48.0,
@@ -180,7 +180,7 @@ def test_decision_dimensao_critica_em_queda():
         digital_twin=digital_twin,
     )
     assert result.priority == "alta"
-    assert result.action == "investigar_queda_em_dimensao"
+    assert result.action == "investigar_queda_em_disciplina"
 
 
 def test_decision_seleciona_dimensao_de_maior_prioridade():
@@ -190,7 +190,7 @@ def test_decision_seleciona_dimensao_de_maior_prioridade():
     digital_twin = SimpleNamespace(
         performance_level="excelente",
         performance_direction="evolucao",
-        dimensions=[
+        disciplines=[
             SimpleNamespace(
                 discipline="Português",
                 current_value=88.0,
@@ -217,7 +217,7 @@ def test_decision_seleciona_dimensao_de_maior_prioridade():
     )
 
     assert result.priority == "alta"
-    assert result.action == "investigar_queda_em_dimensao"
+    assert result.action == "investigar_queda_em_disciplina"
     assert "Matemática" in result.reason
 
 
@@ -228,7 +228,7 @@ def test_decision_em_empate_seleciona_maior_queda():
     digital_twin = SimpleNamespace(
         performance_level="excelente",
         performance_direction="evolucao",
-        dimensions=[
+        disciplines=[
             SimpleNamespace(
                 discipline="Português",
                 current_value=88.0,
@@ -255,5 +255,5 @@ def test_decision_em_empate_seleciona_maior_queda():
     )
 
     assert result.priority == "media"
-    assert result.action == "investigar_queda_em_dimensao"
+    assert result.action == "investigar_queda_em_disciplina"
     assert "Direito" in result.reason

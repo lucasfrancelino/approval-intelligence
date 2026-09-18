@@ -23,4 +23,4 @@ class DigitalTwinResponse(BaseModel):
     overall_status: str
     summary: str
 
-    dimensions: list[DimensionAnalysisResponse]
+    disciplines: list[DimensionAnalysisResponse]

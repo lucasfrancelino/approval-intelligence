@@ -17,6 +17,7 @@ def analyze_dimensions_service(
     db: Session,
     candidate_exam_id: int,
 ) -> list[DimensionAnalysisResponse]:
+
     evidences = get_evidences_by_candidate_exam(
         db=db,
         candidate_exam_id=candidate_exam_id,
@@ -28,6 +29,9 @@ def analyze_dimensions_service(
     disciplines: dict[str, list[float]] = {}
 
     for evidence in evidences:
+
+        # O desempenho geral é representado pelo bloco principal
+        # do Digital Twin e não deve ser duplicado nesta coleção.
         if (
             evidence.discipline is None
             or evidence.discipline == GENERAL_DISCIPLINE
@@ -45,19 +49,23 @@ def analyze_dimensions_service(
                 evidence_type=evidence.evidence_type,
                 value=evidence.value,
             )
+
+            value = float(interpretation.value)
+
         except (ValueError, TypeError):
             continue
 
         disciplines.setdefault(
             evidence.discipline,
             [],
-        ).append(float(interpretation.value))
+        ).append(value)
 
     dimension_engine = DimensionEngine()
 
     analyses: list[DimensionAnalysisResponse] = []
 
     for discipline, values in disciplines.items():
+
         if len(values) < 2:
             continue
 
@@ -75,6 +83,8 @@ def analyze_dimensions_service(
                 direction=analysis.direction,
                 status=analysis.status,
                 level=analysis.level,
+                classification=analysis.classification,
+                gap_type=analysis.gap_type,
             )
         )
 

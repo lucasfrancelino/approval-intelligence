@@ -1,3 +1,5 @@
+# backend/app/engines/decision_engine.py
+
 from dataclasses import dataclass
 
 
@@ -11,10 +13,12 @@ class Decision:
 
 
 class DecisionEngine:
+
     def decide(
         self,
         digital_twin,
     ) -> Decision:
+
         discipline_decision = self._analyze_disciplines(
             digital_twin=digital_twin,
         )
@@ -62,7 +66,8 @@ class DecisionEngine:
                 target_discipline=None,
                 reason=(
                     "O desempenho ainda exige atenção, mas apresenta evolução. "
-                    "A prioridade deve ser consolidar o aprendizado."
+                    "A prioridade deve ser consolidar o aprendizado "
+                    "sem interromper a trajetória de evolução."
                 ),
             )
 
@@ -77,7 +82,8 @@ class DecisionEngine:
                 target_discipline=None,
                 reason=(
                     "O nível atual de desempenho é positivo, porém existe "
-                    "uma tendência recente de queda."
+                    "uma tendência recente de queda. É necessário investigar "
+                    "a causa antes de aumentar a carga ou complexidade."
                 ),
             )
 
@@ -92,7 +98,8 @@ class DecisionEngine:
                 target_discipline=None,
                 reason=(
                     "O candidato apresenta bom desempenho e evolução. "
-                    "A próxima ação pode aumentar gradualmente o desafio."
+                    "A próxima ação pode aumentar gradualmente "
+                    "o nível de desafio."
                 ),
             )
 
@@ -102,8 +109,9 @@ class DecisionEngine:
             action="manter_e_observar",
             target_discipline=None,
             reason=(
-                "O desempenho atual não apresenta condição suficiente "
-                "para uma intervenção mais específica."
+                "O desempenho atual não apresenta uma condição suficiente "
+                "para uma intervenção mais específica. "
+                "O estado deve ser monitorado."
             ),
         )
 
@@ -111,10 +119,13 @@ class DecisionEngine:
         self,
         digital_twin,
     ) -> Decision | None:
-        disciplines = digital_twin.dimensions
+
+        disciplines = digital_twin.disciplines
+
         candidates = []
 
         for discipline in disciplines:
+
             if (
                 discipline.direction != "queda"
                 or discipline.variation >= 0
@@ -155,12 +166,14 @@ class DecisionEngine:
         return Decision(
             decision_type="monitoramento_dimensao",
             priority=priority,
-            action="investigar_queda_em_dimensao",
+            action="investigar_queda_em_disciplina",
             target_discipline=discipline.discipline,
             reason=(
-                f"A disciplina {discipline.discipline} apresenta queda de "
-                f"{abs(discipline.variation):.1f} pontos percentuais nas "
-                "evidências mais recentes."
+                f"A disciplina {discipline.discipline} "
+                f"apresenta queda de {abs(discipline.variation):.1f} "
+                "pontos percentuais nas evidências mais recentes. "
+                "A prioridade deve ser investigar a causa da queda "
+                "antes de aumentar a carga ou complexidade."
             ),
         )
 
@@ -168,6 +181,7 @@ class DecisionEngine:
     def _classify_discipline_priority(
         discipline,
     ) -> str:
+
         if discipline.level == "critico":
             return "alta"
 
@@ -177,7 +191,16 @@ class DecisionEngine:
         ):
             return "alta"
 
-        if discipline.level in {"bom", "excelente"}:
+        if (
+            discipline.level == "bom"
+            and discipline.direction == "queda"
+        ):
+            return "media"
+
+        if (
+            discipline.level == "excelente"
+            and discipline.direction == "queda"
+        ):
             return "media"
 
         return "baixa"

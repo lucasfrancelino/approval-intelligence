@@ -31,9 +31,9 @@ def test_digital_twin_com_evolucao():
 
     performance = build_performance()
 
-    dimensions = [
+    disciplines = [
         SimpleNamespace(
-            dimension="Português",
+            discipline="Português",
             current_value=88.0,
             previous_value=93.0,
             variation=-5.0,
@@ -46,7 +46,7 @@ def test_digital_twin_com_evolucao():
     result = engine.build(
         candidate_exam_id=1,
         performance=performance,
-        dimensions=dimensions,
+        disciplines=disciplines,
     )
 
     assert result.candidate_exam_id == 1
@@ -64,10 +64,10 @@ def test_digital_twin_com_evolucao():
     assert result.evidence_count == 4
     assert result.overall_status == "evolucao"
 
-    assert result.dimensions == dimensions
+    assert result.disciplines == disciplines
 
 
-def test_digital_twin_com_dimensoes_vazias_por_padrao():
+def test_digital_twin_com_disciplinas_vazias_por_padrao():
 
     engine = DigitalTwinEngine()
 
@@ -78,7 +78,7 @@ def test_digital_twin_com_dimensoes_vazias_por_padrao():
         performance=performance,
     )
 
-    assert result.dimensions == []
+    assert result.disciplines == []
 
 
 def test_digital_twin_com_queda():

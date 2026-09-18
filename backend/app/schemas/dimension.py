@@ -9,3 +9,5 @@ class DimensionAnalysisResponse(BaseModel):
     direction: str
     status: str
     level: str
+    classification: str
+    gap_type: str

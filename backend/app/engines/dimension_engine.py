@@ -16,6 +16,8 @@ class DisciplineAnalysis:
     direction: str
     status: str
     level: str
+    classification: str
+    gap_type: str
 
 
 class DimensionEngine:
@@ -38,6 +40,11 @@ class DimensionEngine:
         status = classify_status(direction)
         level = classify_level(current_value)
 
+        classification, gap_type = self._classify_strength_or_gap(
+            level=level,
+            direction=direction,
+        )
+
         return DisciplineAnalysis(
             discipline=discipline,
             current_value=current_value,
@@ -46,4 +53,25 @@ class DimensionEngine:
             direction=direction,
             status=status,
             level=level,
+            classification=classification,
+            gap_type=gap_type,
         )
+
+    @staticmethod
+    def _classify_strength_or_gap(
+        level: str,
+        direction: str,
+    ) -> tuple[str, str]:
+        is_low_level = level in {"critico", "atencao"}
+        is_dropping = direction == "queda"
+
+        if is_low_level and is_dropping:
+            return "gap", "nivel_e_tendencia"
+
+        if is_low_level:
+            return "gap", "nivel"
+
+        if is_dropping:
+            return "gap", "tendencia"
+
+        return "forca", "nenhum"
