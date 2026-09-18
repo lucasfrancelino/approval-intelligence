@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.engines.action_engine import RecommendedAction as ActionResult
+from app.models.decision import Decision as DecisionModel
 from app.models.recommended_action import (
     RecommendedAction as RecommendedActionModel,
 )
@@ -23,3 +24,21 @@ def create_recommended_action(
     db.refresh(action_model)
 
     return action_model
+
+
+def get_actions_by_candidate_exam(
+    db: Session,
+    candidate_exam_id: int,
+) -> list[RecommendedActionModel]:
+    return (
+        db.query(RecommendedActionModel)
+        .join(
+            DecisionModel,
+            DecisionModel.id == RecommendedActionModel.decision_id,
+        )
+        .filter(
+            DecisionModel.candidate_exam_id == candidate_exam_id,
+        )
+        .order_by(RecommendedActionModel.created_at.desc())
+        .all()
+    )

@@ -3,6 +3,7 @@ from unittest.mock import Mock
 
 from app.repositories.action_repository import (
     create_recommended_action,
+    get_actions_by_candidate_exam,
 )
 
 
@@ -36,3 +37,31 @@ def test_create_recommended_action():
     db.refresh.assert_called_once_with(added_action)
 
     assert result is added_action
+
+
+def test_get_actions_by_candidate_exam():
+    db = Mock()
+
+    expected_actions = [
+        SimpleNamespace(id=2, decision_id=8),
+        SimpleNamespace(id=1, decision_id=7),
+    ]
+
+    query_mock = db.query.return_value
+    join_mock = query_mock.join.return_value
+    filter_mock = join_mock.filter.return_value
+    order_by_mock = filter_mock.order_by.return_value
+    order_by_mock.all.return_value = expected_actions
+
+    result = get_actions_by_candidate_exam(
+        db=db,
+        candidate_exam_id=1,
+    )
+
+    assert result == expected_actions
+
+    db.query.assert_called_once()
+    query_mock.join.assert_called_once()
+    join_mock.filter.assert_called_once()
+    filter_mock.order_by.assert_called_once()
+    order_by_mock.all.assert_called_once()
