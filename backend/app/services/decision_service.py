@@ -7,10 +7,14 @@ from app.engines.action_engine import (
     RecommendedAction,
 )
 from app.engines.decision_engine import Decision, DecisionEngine
-from app.repositories.action_repository import create_recommended_action
+from app.repositories.action_repository import (
+    create_recommended_action,
+    get_equivalent_action,
+)
 from app.repositories.decision_repository import (
     create_decision,
     get_decisions_by_candidate_exam,
+    get_equivalent_decision,
 )
 from app.services.digital_twin_service import get_digital_twin_service
 
@@ -41,23 +45,37 @@ def get_next_best_action_service(
         digital_twin=digital_twin,
     )
 
-    decision_model = create_decision(
-        db=db,
-        candidate_exam_id=candidate_exam_id,
-        decision=decision,
-    )
-
     action_engine = ActionEngine()
 
     recommended_action = action_engine.translate(
         decision=decision,
     )
 
-    action_model = create_recommended_action(
+    decision_model = get_equivalent_decision(
+        db=db,
+        candidate_exam_id=candidate_exam_id,
+        decision=decision,
+    )
+
+    if decision_model is None:
+        decision_model = create_decision(
+            db=db,
+            candidate_exam_id=candidate_exam_id,
+            decision=decision,
+        )
+
+    action_model = get_equivalent_action(
         db=db,
         decision_id=decision_model.id,
         action=recommended_action,
     )
+
+    if action_model is None:
+        action_model = create_recommended_action(
+            db=db,
+            decision_id=decision_model.id,
+            action=recommended_action,
+        )
 
     return NextBestActionResult(
         decision=decision,

@@ -26,6 +26,33 @@ def create_recommended_action(
     return action_model
 
 
+def get_equivalent_action(
+    db: Session,
+    decision_id: int,
+    action: ActionResult,
+) -> RecommendedActionModel | None:
+    return (
+        db.query(RecommendedActionModel)
+        .filter(
+            RecommendedActionModel.decision_id == decision_id,
+            RecommendedActionModel.operational_action
+            == action.operational_action,
+            RecommendedActionModel.instructions == action.instructions,
+            RecommendedActionModel.status.in_(
+                [
+                    "recommended",
+                    "in_progress",
+                ]
+            ),
+        )
+        .order_by(
+            RecommendedActionModel.created_at.desc(),
+            RecommendedActionModel.id.desc(),
+        )
+        .first()
+    )
+
+
 def get_actions_by_candidate_exam(
     db: Session,
     candidate_exam_id: int,
@@ -41,6 +68,7 @@ def get_actions_by_candidate_exam(
         )
         .order_by(
             RecommendedActionModel.created_at.desc(),
+            RecommendedActionModel.id.desc(),
         )
         .all()
     )
